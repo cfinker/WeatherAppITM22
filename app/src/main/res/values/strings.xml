@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">WeatherApp ITM22</string>
+    <string name="search">Search</string>
+    <string name="location">Location</string>
+    <string name="locationPlaceholder">Enter a location to request weather data</string>
+    <string name="icon_location">Location</string>
+</resources>
