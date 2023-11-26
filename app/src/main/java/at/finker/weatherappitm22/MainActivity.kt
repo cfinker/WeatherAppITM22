@@ -28,10 +28,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import at.finker.weatherappitm22.ui.WeatherViewModel
+import at.finker.weatherappitm22.ui.screen.HomeScreen
 import at.finker.weatherappitm22.ui.theme.WeatherAppITM22Theme
 
 class MainActivity : ComponentActivity() {
@@ -39,10 +42,15 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
+            val weatherViewModel: WeatherViewModel = viewModel()
             WeatherAppITM22Theme {
                 NavHost(navController = navController, startDestination = "home") {
                     composable("home") {
-                        HomeScreen(navController)
+                        HomeScreen(
+                            navController = navController,
+                            weatherViewModel = weatherViewModel,
+                            weatherUiState = weatherViewModel.weatherUiState
+                        )
                     }
                     composable("imprint") {
                         ImprintScreen(navController)
@@ -53,61 +61,11 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun HomeScreen(navController: NavController, modifier: Modifier = Modifier
-    .fillMaxSize()
-    .wrapContentSize(Alignment.Center)) {
-    var result by remember {
-        mutableStateOf(1)
-    }
-    var locationValue by remember {
-        mutableStateOf("")
-    }
-
-    Column (
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = "Hello $result $locationValue"
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        
-        OutlinedTextField(modifier = Modifier.fillMaxWidth(),
-            label = { Text(text = stringResource(id = R.string.location))},
-            placeholder = { Text(text = stringResource(id = R.string.locationPlaceholder))},
-            leadingIcon = {
-                Icon(Icons.Rounded.LocationOn,
-                    contentDescription = stringResource(id = R.string.icon_location))
-            },
-            value = locationValue,
-            onValueChange = {
-                locationValue = it
-            }
-        )
-        
-        Button(onClick = {
-            result = (1..6).random()
-        }) {
-            Text(text = stringResource(id = R.string.search))
-        }
-
-        Button(onClick = {
-            navController.navigate("imprint")
-        }) {
-            Text("Imprint")
-        }
-
-    }
-}
-
 @Composable
 fun ImprintScreen(navController: NavController,
                   modifier: Modifier = Modifier
-    .fillMaxSize()
-    .wrapContentSize(Alignment.Center)) {
+                      .fillMaxSize()
+                      .wrapContentSize(Alignment.Center)) {
     Column (
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
