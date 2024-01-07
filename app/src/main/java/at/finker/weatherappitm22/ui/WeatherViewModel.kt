@@ -1,5 +1,7 @@
 package at.finker.weatherappitm22.ui
 
+import android.location.Location
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -42,12 +44,20 @@ class WeatherViewModel(
                     WeatherUiState.Success(WeatherApi.retrofitService.getWeatherData(location, appid))
                 }
             } catch (e: IOException) {
+                Log.e("weather http io", e.toString())
                 WeatherUiState.Error
             } catch (e: HttpException) {
+                Log.e("weather http", e.toString())
                 WeatherUiState.Error
             }
         }
     }
+
+    fun getWeatherDataForCurrentLocation(currentLocation: Location) {
+        location = currentLocation.latitude.toString() + ',' + currentLocation.longitude.toString();
+        getWeatherData();
+    }
+
 
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {

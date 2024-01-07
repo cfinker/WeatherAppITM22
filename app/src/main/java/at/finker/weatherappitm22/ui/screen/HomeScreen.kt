@@ -1,5 +1,8 @@
 package at.finker.weatherappitm22.ui.screen
 
+import android.Manifest
+import android.util.Log
+import androidx.activity.result.ActivityResultLauncher
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -31,14 +34,16 @@ fun HomeScreen(
     navController: NavController,
     weatherViewModel: WeatherViewModel = viewModel(),
     weatherUiState: WeatherUiState,
+    locationPermissionRequest: ActivityResultLauncher<Array<String>>?,
     modifier: Modifier = Modifier
 ) {
+    Log.d("weatherUiState switch", weatherUiState.toString())
     when (weatherUiState) {
         //  is WeatherUiState.Loading -> LoadingScreen(modifier)
         is WeatherUiState.Success -> ResultScreen(weatherUiState.weatherData, modifier)
         /// is WeatherUiState.Error -> ErrorScreen(modifier)
-        is WeatherUiState.InputRequired -> InputScreen(navController, weatherViewModel)
-        else -> InputScreen(navController, weatherViewModel)
+        is WeatherUiState.InputRequired -> InputScreen(navController, weatherViewModel, locationPermissionRequest)
+        else -> InputScreen(navController, weatherViewModel, locationPermissionRequest)
     }
 }
 
@@ -57,7 +62,9 @@ fun ResultScreen(weatherData: WeatherData, modifier: Modifier = Modifier
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InputScreen(navController: NavController, weatherViewModel: WeatherViewModel, modifier: Modifier = Modifier
+fun InputScreen(navController: NavController, weatherViewModel: WeatherViewModel,
+                locationPermissionRequest: ActivityResultLauncher<Array<String>>?,
+                modifier: Modifier = Modifier
     .fillMaxSize()
     .wrapContentSize(Alignment.Center)) {
 
@@ -90,6 +97,12 @@ fun InputScreen(navController: NavController, weatherViewModel: WeatherViewModel
             weatherViewModel.getWeatherData()
         }) {
             Text(stringResource(R.string.search))
+        }
+
+        Button(onClick = {
+            locationPermissionRequest?.launch(arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION))
+        }) {
+            Text(stringResource(R.string.currentLocation))
         }
 
         Button(onClick = {

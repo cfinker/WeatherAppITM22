@@ -80,4 +80,6 @@ dependencies {
     // add data store
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
+    // add google play services for geolocation
+    implementation("com.google.android.gms:play-services-location:21.0.1")
 }
