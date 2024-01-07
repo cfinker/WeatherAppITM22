@@ -42,7 +42,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
-            val weatherViewModel: WeatherViewModel = viewModel()
+            val weatherViewModel: WeatherViewModel = viewModel(
+                factory = WeatherViewModel.Factory
+            )
+            weatherViewModel.loadLocationFromDataStorage()
+
             WeatherAppITM22Theme {
                 NavHost(navController = navController, startDestination = "home") {
                     composable("home") {
